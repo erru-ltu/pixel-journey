@@ -7,11 +7,11 @@ public enum PlayerState
 {
     idle,
     walking,
-    attacking
 }
 
 public class PlayerController : MonoBehaviour
 {
+    #region Variables
     [SerializeField]
     bool shortAttack = true;
 
@@ -26,16 +26,14 @@ public class PlayerController : MonoBehaviour
     private Animator anim;
 
     public float speed;
-    public float timeBtwAttack;
-    private float startTimeBtwAttack;
+
 
     public bool isAttacking = false;
-
+    #endregion
     // Start is called before the first frame update
     void Start()
     {
-        startTimeBtwAttack = timeBtwAttack;
-        //currentState = PlayerState.idle;
+        currentState = PlayerState.idle;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
     }
@@ -43,6 +41,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //player movement with joystick
         if(joystick.Horizontal() != 0 || joystick.Vertical() != 0)
         {
             Movement();
@@ -56,6 +55,7 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("walking", false);
         }
 
+        //player attack
         SwordAttack();    
     }
 
@@ -81,11 +81,13 @@ public class PlayerController : MonoBehaviour
 
     public void SwordAttack()
     {
+        //if we touch the screen and not UI elements
         if(Input.touchCount > 0 && !IsPointerOverGameObject())
         {
             Touch attackTouch = Input.GetTouch(0);
             if (attackTouch.phase == TouchPhase.Began)
             {
+                //start attack 
                 StartCoroutine(SwordAttackCo());
             }
         }       
@@ -104,8 +106,6 @@ public class PlayerController : MonoBehaviour
             shortAttack = true;
             longAttack = false;
         }
-
-        Debug.Log(shortAttack);
     }
 
     private IEnumerator SwordAttackCo()
@@ -113,7 +113,6 @@ public class PlayerController : MonoBehaviour
         if (shortAttack && !isAttacking)
         {
             isAttacking = true;
-            currentState = PlayerState.attacking;
             anim.SetBool("shortAttack", true);
             yield return new WaitForSeconds(0.5f);
             anim.SetBool("shortAttack", false);
@@ -123,7 +122,6 @@ public class PlayerController : MonoBehaviour
         else if(longAttack && !isAttacking)
         {
             isAttacking = true;
-            currentState = PlayerState.attacking;
             anim.SetBool("longAttack", true);
             yield return new WaitForSeconds(0.5f);
             anim.SetBool("longAttack", false);
@@ -138,6 +136,7 @@ public class PlayerController : MonoBehaviour
         {
             if(EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
             {
+                //touch UI element
                 return true;
             }
         }
