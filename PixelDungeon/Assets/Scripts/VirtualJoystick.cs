@@ -21,8 +21,8 @@ public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerDownHandler,
     {
         Vector2 position = Vector2.zero;
 
-        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(bgImage.rectTransform, 
-            eventData.position, eventData.pressEventCamera, out position));
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(bgImage.rectTransform,
+            eventData.position, eventData.pressEventCamera, out position)) ;
 
         position.x = (position.x / bgImage.rectTransform.sizeDelta.x);
         position.y = (position.y / bgImage.rectTransform.sizeDelta.y);
